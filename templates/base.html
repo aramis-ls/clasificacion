@@ -1,0 +1,29 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema de Clasificación{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<header>
+        <div class="flex items-center space-x-4">
+            <a href="https://www.mimpo.com/">
+                <img src="{% static 'img/logo.svg' %}" alt="Logo" class="h-6">
+            </a>
+            
+        </div>
+        <nav class="flex space-x-6">
+            <a id="btn-clasificar" href="{% url 'clasificacion:Clasificacion' %}">Clasificar</a>
+            <a href="{% url 'fracciones:Fracciones' %}" class="hover:underline">Fracciones</a>
+            <a href="{% url 'productos:Productos' %}" class="hover:underline">Productos</a>
+            <a href="{% url 'clientes:Clientes' %}" class="hover:underline">Clientes</a>
+        </nav>
+    </header>
+    
+ <main class="contenido">
+        {% block content %}
+        {% endblock %}
+    </main>
+</html>

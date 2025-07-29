@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Fracciones{% endblock %}
+
+{% block content %}
+{% load static %}
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/fracciones.js' %}"></script>
+
+<div class="contenedor-listas">
+    <div class="barra-superior">
+        <input type="text" id="busqueda" placeholder="Buscar fraccion...">
+        <div class="acciones">
+            <button onclick="mostrarFormulario('nuevo')">Nueva</button>
+            <button onclick="mostrarFormulario('modificar')">Modificar</button>
+
+        </div>
+    </div>
+
+    <table id="tabla-fracciones" class="display">
+        <thead>
+            <tr>
+                <th>Fracción</th>
+                <th>Descripción</th>
+                <th>PE</th>
+                <th>Arancel</th>
+                <th>Regulación</th>
+                <th>Descripción Regulación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if relaciones %}
+            {% for rel in relaciones %}
+            <tr data-id="{{ rel.id_frcc.id_frcc }}">
+                <td>{{ rel.id_frcc.nombre_frcc }}</td>
+                <td>{{ rel.id_frcc.desc_frcc }}</td>
+                <td>{{ rel.id_frcc.pe }}</td>
+                <td>{{ rel.id_frcc.arancel }}</td>
+                <td>{{ rel.id_reg.nombre_reg }}</td>
+                <td>{{ rel.id_reg.desc_reg }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="6">No hay Fracciones</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+</div>
+
+<div id="formulario-emergente" class="emergente oculto">
+    <h2 id="titulo-formulario">Insertar una nueva fraccion</h2>
+    <form method="POST" id="form-fraccion">
+        {% csrf_token %}
+        <input type="hidden" name="fraccion_id" id="fraccion_id">
+        {{ form.as_p}}
+        <button type="submit" class="btn_formulario">Guardar</button>
+        <button type="button" onclick="cerrarFormulario()" class="btn_formulario">Cancelar</button>
+    </form>
+</div>
+
+<div id="mensaje-emergente" class="emergente oculto">
+    <h2>Advertencia</h2>
+    <p>Seleccione una fraccion antes de continuar.</p>
+    <button onclick="cerrarMensaje()" class="btn_formulario">Aceptar</button>
+</div>
+
+{%endblock%}

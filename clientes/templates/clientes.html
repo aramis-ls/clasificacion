@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Clientes{% endblock %}
+
+{% block content %}
+{% load static %}
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="{% static 'js/clientes.js' %}"></script>
+
+<div class="contenedor-listas">
+    <div class="barra-superior">
+        <input type="text" id="busqueda" placeholder="Buscar cliente...">
+        <div class="acciones">
+            <button onclick="mostrarFormulario('nuevo')">Nuevo</button>
+            <button onclick="mostrarFormulario('modificar')">Modificar</button>
+            
+        </div>
+    </div>
+
+    <table id="tabla-clientes" class="display">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tax ID</th>
+            <th>Domicilio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for proveedor in proveedores %}
+        <tr data-id="{{ proveedor.taxid }}">
+            <td>{{ proveedor.nombre_prov }}</td>
+            <td>{{ proveedor.taxid }}</td>
+            <td>{{ proveedor.domicilio }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No hay clientes</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+
+<div id="formulario-emergente" class="emergente oculto">
+    <h2 id="titulo-formulario">Insertar un nuevo cliente</h2>
+    <form method="POST" id="form-cliente">
+        {% csrf_token %}
+        <input type="hidden" name="cliente_id" id="cliente_id">
+        {{ form.as_p}}
+        <button type="submit" class="btn_formulario">Guardar</button>
+        <button type="button" onclick="cerrarFormulario()" class="btn_formulario">Cancelar</button>
+    </form>
+</div>
+
+<div id="mensaje-emergente" class="emergente oculto">
+    <h2>Advertencia</h2>
+    <p>Seleccione un cliente antes de continuar.</p>
+    <button onclick="cerrarMensaje()" class="btn_formulario">Aceptar</button>
+</div>
+
+{%endblock%}

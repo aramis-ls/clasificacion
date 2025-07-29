@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Menú Principal{% endblock %}
+
+{% block content %}
+<div class="card-container">
+    <h1>Bienvenido</h1>
+    <h2 class="solicitud">¿Que desean relizar?</h2>
+    <hr class="separador">
+
+    <div class="card">
+        {% for funcion in funciones %}
+            <a href="{{ funcion.url }}" class="card icon">
+                <strong>{{ funcion.nombre }}</strong>
+                <span>{{ funcion.descripcion }}</span>
+            </a>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
