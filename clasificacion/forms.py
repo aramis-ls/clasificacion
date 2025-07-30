@@ -1,12 +1,20 @@
 from django import forms
 
-class ExcelUploadForm(forms.Form):
+class clasificar(forms.Form):
     clve_prod= forms.CharField(
         label="¿Cual es la columna de las claves de productos?",
         max_length=50,
         required=True,
         widget=forms.TextInput(attrs={
             'placeholder': 'Ej: Producto, claves, etc'})
+
+    )
+    proveedor= forms.CharField(
+        label="¿Cual es la columna del proveedor?",
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Ej: cliente, proveedor, etc'})
 
     )
     fila=forms.IntegerField(

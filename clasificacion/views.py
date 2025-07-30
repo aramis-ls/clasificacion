@@ -1,44 +1,67 @@
+import os
 from django.http import HttpResponse
 import pandas as pd 
-from django.shortcuts import render
-from .forms import ExcelUploadForm
+from django.shortcuts import render, redirect
+
+from clasificador import settings
+from .forms import clasificar
 from productos.models import Producto
+from fracciones.models import Fraccion
+from clientes.models import Proveedores
 
 def clasificacion(request):
-    lista_encontrados = []
-    lista_faltantes = []
+    clasificados = []
+    no_clasificados = []
 
     if request.method == 'POST':
-        form = ExcelUploadForm(request.POST, request.FILES)
+        form = clasificar(request.POST, request.FILES)
         if form.is_valid():
-            columna=form.cleaned_data['clve_prod']
-            fila=form.cleaned_data.get('fila'-1) or 0                                
-            df = pd.read_excel(request.FILES['archivo'], fila)
+            archivo=form.cleaned_data['archivo']
+            product=form.cleaned_data['clve_prod']
+            proveed=form.cleaned_data['proveedor']
+            fila=form.cleaned_data['fila']
+            df = pd.read_excel(archivo, header=fila-1)
 
-            if columna not in df.columns:  
-                return HttpResponse("No se encontro la columna especificada")
-            
-            claves_excel = df[columna].dropna().astype(str).unique()
+            #valid
+            for index, row in df.iterrows():
+                codigo = str(row[product]).strip()
+                nombre_prov = str(row[proveed]).strip()
 
-            productos = Producto.objects.filter(clave__inx=claves_excel)
-            claves_db = set(productos.values_list('clave', flat=True))
+                try:
+                    proveedor = Proveedores.objects.get(nombre_prov__iexact=nombre_prov)
+                    producto = Producto.objects.get(codigo=codigo, id_prov=proveedor)
 
-            for producto in productos:
-                lista_encontrados.append({
-                    'clave': producto.clave,
-                    'fraccion': producto.fraccion_arancelaria,
-                    'regulaciones': producto.regulaciones,
-                    'precio': producto.precio_estimado
-                })
+                    fraccion = producto.id_frcc
+                    clasificados.append({
+                        'clave': codigo,
+                        'proveedor': proveedor.nombre_prov,
+                        'fraccion': fraccion.nombre_frcc,
+                        'pe': fraccion.pe,
+                        'arancel': fraccion.arancel,
+                    })
+                except (Proveedores.DoesNotExist, Producto.DoesNotExist, AttributeError):
+                    no_clasificados.append({
+                        'clave': codigo,
+                        'proveedor': nombre_prov
+                    })
 
-            faltantes = set(claves_excel) - claves_db
-            for clave in faltantes:
-                lista_faltantes.append(clave)
+            # Convertir a DataFrame
+            df_clasificados = pd.DataFrame(clasificados)
+            df_no_clasificados = pd.DataFrame(no_clasificados)
+
+            # Guardar archivos
+            ruta_clasificados = os.path.join(settings.MEDIA_ROOT, 'clasificados.xlsx')
+            ruta_no_clasificados = os.path.join(settings.MEDIA_ROOT, 'no_clasificados.xlsx')
+
+            df_clasificados.to_excel(ruta_clasificados, index=False)
+            df_no_clasificados.to_excel(ruta_no_clasificados, index=False)
+
+            return render(request, 'clasificado.html', {
+                'archivo_clasificados': 'clasificados.xlsx',
+                'archivo_no_clasificados': 'no_clasificados.xlsx'
+            })
+
     else:
-        form = ExcelUploadForm()
+        form = clasificar()
 
-    return render(request, 'clasificar.html', {
-        'form': form,
-        'lista_encontrados': lista_encontrados,
-        'lista_faltantes': lista_faltantes
-    })
+    return render(request, 'clasificar.html', {'form': form,})
