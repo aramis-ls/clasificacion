@@ -31,12 +31,14 @@ a:hover {
 }
 
 .cont{
-        display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     flex-grow: 1;
     margin-top: 80px;
 }
+
 
 .formulario{
 
@@ -302,4 +304,18 @@ main p {
     color: white;
     border-radius: .2rem;
     border-color: transparent;
+}
+
+.descargas {
+    padding: 0.5rem 1rem;
+    background-color: #D2A882;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.alerta {
+    color: red;
+    margin-top: 15px;
+    font-weight: bold;
 }

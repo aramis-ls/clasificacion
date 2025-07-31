@@ -1,38 +1,21 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  
+
+<div class="cont">
     
-{% extends 'base.html' %}
-
-{% block title %}Clasificación de Elementos{% endblock %}
-{% block content%}
-
-    
-    <div class ="cont">
-    <form class="formulario" method="post" enctype="multipart/form-data">
-        <h1>Subir archivo Excel</h1>
-    <p>Ingrese el archivo a clasificar</p>  
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Subir</button>
-    </form>
-</div>
-    {% if lista_encontrados %}
-        <h2>Claves encontradas:</h2>
-        <ul>
-            {% for producto in lista_encontrados %}
-                <li>{{ producto.clave }} | Fracción: {{ producto.fraccion }} | Regulaciones: {{ producto.regulaciones }} | Precio: {{ producto.precio }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if lista_faltantes %}
-        <h2>Claves faltantes:</h2>
-        <ul>
-            {% for clave in lista_faltantes %}
-                <li>{{ clave }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
+  <form method="post" class="formulario" enctype="multipart/form-data">
+    <h2>Cargar datos desde Excel</h2>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Cargar</button>
+  </form>
+  </div>
+  
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alerta">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
-</html>
