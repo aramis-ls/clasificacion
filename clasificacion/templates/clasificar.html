@@ -11,11 +11,13 @@
     {{ form.as_p }}
     <button type="submit">Cargar</button>
   </form>
-  </div>
+  
   
   {% if messages %}
     {% for message in messages %}
       <div class="alerta">{{ message }}</div>
     {% endfor %}
   {% endif %}
+
+  </div>
 {% endblock %}

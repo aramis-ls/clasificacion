@@ -10,3 +10,5 @@ class Proveedores(models.Model): #tabla de clientes o proveedores
     class Meta:
         managed=False
         db_table = 'proveedores'
+    def __str__(self):
+        return self.nombre_prov

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h2>Lista de productos</h2>
+
+<input type="text" id="search-input" placeholder="Buscar código..." value="{{ query }}">
+<button onclick="buscar()">Buscar</button>
+
+<table id="tabla" class="display">
+  <thead>
+    <tr>
+      <th>Código</th>
+      <th>Cliente</th>
+      <th>Fracción asignada</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in productos %}
+      <tr onclick="seleccionar('{{ p.id_prod }}', '{{ p.codigo }}', '{{ p.id_prov.taxid }}', '{{ p.id_frcc.nombre_frcc }}')">
+        <td>{{ p.codigo }}</td>
+        <td>{{ p.id_prov.taxid }}</td>
+        <td>{{ p.id_frcc.nombre_frcc }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form id="formulario" method="POST">
+  {% csrf_token %}
+  <input type="hidden" id="producto_id" name="producto_id">
+  {{ form.as_p }}
+  <button type="submit">Guardar</button>
+</form>
+
+<script src="{% static 'productos/js/productos.js' %}"></script>
+
+{% endblock %}

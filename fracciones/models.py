@@ -11,6 +11,9 @@ class Fraccion(models.Model): #tabla de fracciones
     class Meta:
         managed=False
         db_table = 'fraccion'
+    def __str__(self):
+        return str(self.nombre_frcc)
+    
 
 
 class Regulaciones(models.Model): # tabla de regulaciones 
@@ -21,7 +24,8 @@ class Regulaciones(models.Model): # tabla de regulaciones
     class Meta:
         managed=False
         db_table = 'regulaciones'
-        
+    def __str__(self):
+        return self.nombre_reg 
 
 class FraccionRel(models.Model): #tabla intermedia de relacion entre regulaciones y fracciones 
     id_f_r = models.AutoField(primary_key=True) #identificador de la tabla

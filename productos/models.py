@@ -15,3 +15,5 @@ class Producto(models.Model):
         unique_together = (('codigo', 'id_prov', 'id_frcc'), ('codigo', 'id_prov'),) 
     #unique para que se ingrese solo un producto de un cliente        
     #otro para que a ese producto unico por cliente tenga una unica fraccion arancelaria
+    def __str__(self):
+        return self.codigo
