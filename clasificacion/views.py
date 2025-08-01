@@ -88,12 +88,13 @@ def clasificar_excel(request):
             col_frac = form.cleaned_data['frcc']
             col_pe = form.cleaned_data['pe']
             col_arancel = form.cleaned_data['arancel']
+            col_taxid=form.cleaned_data['tax_id']
 
             try:
                 df = pd.read_excel(archivo, dtype=str, skiprows=fila_inicio - 1)
 
                 # Validar columnas
-                for col in [col_codigo, col_prov, col_frac, col_pe, col_arancel]:
+                for col in [col_codigo, col_prov, col_frac, col_pe, col_arancel, col_taxid]:
                     if col not in df.columns:
                         messages.error(request, f"Columna '{col}' no encontrada.")
                         return render(request, 'clasificar.html', {'form': form})
@@ -101,12 +102,14 @@ def clasificar_excel(request):
                 for _, row in df.iterrows():
                     codigo = row[col_codigo].strip()
                     proveedor_nombre = row[col_prov].strip()
+                    tax_id=row[col_taxid].strip()
                     fraccion_nombre = row[col_frac].strip()
                     pe = row[col_pe].strip()
                     arancel = row[col_arancel].strip()
 
                     # Insertar o recuperar proveedor
-                    proveedor, _ = Proveedores.objects.get_or_create(nombre_prov=proveedor_nombre)
+                    proveedor, _ = Proveedores.objects.get_or_create(nombre_prov=proveedor_nombre,
+                        defaults={'tax_id':tax_id})
 
                     # Insertar o recuperar fracción
                     

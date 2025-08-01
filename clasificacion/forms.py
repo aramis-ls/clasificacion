@@ -29,8 +29,10 @@ class clasificacion(forms.Form):
 class clasificar(forms.Form):
     cod = forms.CharField(label='Columna Código de Producto')
     prov = forms.CharField(label='Columna Proveedor')
+    tax_id = forms.CharField(label='Columna taxid') 
     frcc = forms.CharField(label='Columna Fracción')
     pe = forms.CharField(label='Columna Precio Estimado')
     arancel = forms.CharField(label='Columna Arancel')
     fila = forms.IntegerField(label='Fila de inicio de los datos', min_value=1)
     archivo = forms.FileField(label='Archivo Excel')
+

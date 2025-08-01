@@ -1,5 +1,4 @@
 from django import forms
-from .models import Fraccion, Regulaciones
 
 class FraccionRegulacionForm(forms.Form):
     nombre_frcc = forms.CharField(label='Fracción')

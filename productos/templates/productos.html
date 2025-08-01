@@ -1,38 +1,64 @@
 {% extends 'base.html' %}
+{% block title %}Lista de Productos{% endblock %}
 {% load static %}
+
 {% block content %}
 
-<h2>Lista de productos</h2>
-
-<input type="text" id="search-input" placeholder="Buscar código..." value="{{ query }}">
-<button onclick="buscar()">Buscar</button>
-
-<table id="tabla" class="display">
-  <thead>
-    <tr>
-      <th>Código</th>
-      <th>Cliente</th>
-      <th>Fracción asignada</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in productos %}
-      <tr onclick="seleccionar('{{ p.id_prod }}', '{{ p.codigo }}', '{{ p.id_prov.taxid }}', '{{ p.id_frcc.nombre_frcc }}')">
-        <td>{{ p.codigo }}</td>
-        <td>{{ p.id_prov.taxid }}</td>
-        <td>{{ p.id_frcc.nombre_frcc }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-<form id="formulario" method="POST">
-  {% csrf_token %}
-  <input type="hidden" id="producto_id" name="producto_id">
-  {{ form.as_p }}
-  <button type="submit">Guardar</button>
-</form>
-
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="{% static 'productos/js/productos.js' %}"></script>
+
+<div class="contenedor-listas">
+    <div class="barra-superior">
+        <input type="text" id="busqueda" placeholder="Buscar código de producto...">
+        <div class="acciones">
+            <button onclick="mostrarFormulario('nuevo')">Nuevo</button>
+            <button onclick="mostrarFormulario('modificar')">Modificar</button>
+        </div>
+    </div>
+
+    <table id="tabla-productos" class="display">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Fracción asignada</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if productos %}
+                {% for p in productos %}
+                <tr data-id="{{ p.id_prod }}">
+                    <td>{{ p.codigo }}</td>
+                    <td>{{ p.id_prov.taxid }}</td>
+                    <td>{{ p.id_frcc.nombre_frcc }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3">No hay productos</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div id="formulario-emergente" class="emergente oculto">
+    <h2 id="titulo-formulario">Insertar un nuevo producto</h2>
+    <form method="POST" id="form-producto">
+        {% csrf_token %}
+        <input type="hidden" name="producto_id" id="producto_id">
+        {{ form.as_p }}
+        <button type="submit" class="btn_formulario">Guardar</button>
+        <button type="button" onclick="cerrarFormulario()" class="btn_formulario">Cancelar</button>
+    </form>
+</div>
+
+<div id="mensaje-emergente" class="emergente oculto">
+    <h2>Advertencia</h2>
+    <p>Seleccione un producto antes de continuar.</p>
+    <button onclick="cerrarMensaje()" class="btn_formulario">Aceptar</button>
+</div>
 
 {% endblock %}
