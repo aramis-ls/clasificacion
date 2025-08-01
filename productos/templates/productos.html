@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Lista de Productos{% endblock %}
-{% load static %}
+
 
 {% block content %}
-
+{% load static %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="{% static 'productos/js/productos.js' %}"></script>
+<script src="{% static 'js/productos.js' %}"></script>
 
 <div class="contenedor-listas">
     <div class="barra-superior">
@@ -31,7 +31,7 @@
                 {% for p in productos %}
                 <tr data-id="{{ p.id_prod }}">
                     <td>{{ p.codigo }}</td>
-                    <td>{{ p.id_prov.taxid }}</td>
+                    <td>{{ p.id_prov.nombre_prov }}</td>
                     <td>{{ p.id_frcc.nombre_frcc }}</td>
                 </tr>
                 {% endfor %}

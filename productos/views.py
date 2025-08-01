@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
 from .models import Producto
+from .forms import ProductoForm
 from clientes.models import Proveedores
 from fracciones.models import Fraccion
-from .forms import ProductoForm
 
 def lista_productos(request):
     query = request.GET.get('q', '')
@@ -12,14 +13,22 @@ def lista_productos(request):
 
     if request.method == 'POST':
         prod_id = request.POST.get('producto_id')
-        if prod_id:
-            producto = get_object_or_404(Producto, id_prod=prod_id)
-            form = ProductoForm(request.POST, instance=producto)
-        else:
-            form = ProductoForm(request.POST)
+        form = ProductoForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('productos:Productos')  # Cambia por el nombre real de la ruta
+            with transaction.atomic():
+                if prod_id:
+                    producto = get_object_or_404(Producto, id_prod=prod_id)
+                    producto.codigo = form.cleaned_data['codigo']
+                    producto.id_prov = form.cleaned_data['id_prov']
+                    producto.id_frcc = form.cleaned_data['id_frcc']
+                    producto.save()
+                else:
+                    Producto.objects.create(
+                        codigo=form.cleaned_data['codigo'],
+                        id_prov=form.cleaned_data['id_prov'],
+                        id_frcc=form.cleaned_data['id_frcc']
+                    )
+            return redirect('productos:Productos')  # Asegúrate de que esta URL esté registrada
     else:
         form = ProductoForm()
 
@@ -28,8 +37,8 @@ def lista_productos(request):
 
     return render(request, 'productos.html', {
         'productos': productos,
-        'form': form,
         'query': query,
         'page': page,
-        'total_pages': (total + page_size - 1) // page_size
+        'total_pages': (total + page_size - 1) // page_size,
+        'form': form,
     })

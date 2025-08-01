@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const inputBusqueda = document.getElementById("busqueda");
     const form = document.getElementById("form-producto");
-
+    
     window.mostrarFormulario = function (tipo) {
         document.getElementById("formulario-emergente").classList.remove("oculto");
 
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 mostrarMensaje();
                 return;
             }
+
             document.getElementById("titulo-formulario").textContent = "Modificar producto";
             const celdas = seleccionado.querySelectorAll("td");
 
@@ -57,7 +58,7 @@ $(document).ready(function () {
 
     $('#busqueda').on('keyup', function () {
         tabla
-            .column(0) // Asegúrate que la columna 0 es el código del producto
+            .column(0) // Buscar por código de producto
             .search(this.value)
             .draw();
     });
